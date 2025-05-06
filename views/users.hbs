@@ -1,0 +1,33 @@
+{{> navbar}}
+
+
+<h1 class="text-3xl font-bold underline">
+    Hello world!
+</h1>
+
+
+<table class="table-auto border-collapse border border-gray-300 w-full mt-4">
+    <thead>
+    <tr class="bg-gray-200">
+        <th class="border border-gray-300 px-4 py-2">ID</th>
+        <th class="border border-gray-300 px-4 py-2">Name</th>
+        <th class="border border-gray-300 px-4 py-2">Phone</th>
+        <th class="border border-gray-300 px-4 py-2">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{!-- Example rows, replace with your dynamic data --}}
+    {{#each users}}
+    <tr>
+        <td class="border border-gray-300 px-4 py-2">{{this.id}}</td>
+        <td class="border border-gray-300 px-4 py-2">{{this.name}}</td>
+        <td class="border border-gray-300 px-4 py-2">{{this.phone}}</td>
+        <td class="border border-gray-300 px-4 py-2">
+            <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2">Edit</button>
+            <button class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+        </td>
+    </tr>
+    {{/each}}
+
+    </tbody>
+</table>
