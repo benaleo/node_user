@@ -2,16 +2,14 @@ CREATE DATABASE node_user;
 
 CREATE TABLE users
 (
-    id         int primary key,
-    name       varchar(255),
-    email      varchar(255),
+    id         int primary key AUTO_INCREMENT,
+    name       varchar(255) NOT NULL,
+    email      varchar(255) NOT NULL,
     password   varchar(255),
     phone      varchar(20),
-    is_active  boolean,
-    is_deleted boolean
+    is_active  boolean NOT NULL DEFAULT TRUE,
+    is_deleted boolean NOT NULL DEFAULT FALSE
 );
-
-
 
 INSERT INTO users (id, name, email, password, phone, is_active, is_deleted)
 VALUES (1, 'Alice', 'alice@example.com', NULL, '1234567890', TRUE, FALSE),
@@ -20,3 +18,6 @@ VALUES (1, 'Alice', 'alice@example.com', NULL, '1234567890', TRUE, FALSE),
        (4, 'Diana', 'diana@example.com', NULL, '5566778899', TRUE, TRUE);
 
 DROP TABLE IF EXISTS users;
+
+ALTER TABLE users
+ADD COLUMN avatar text;
