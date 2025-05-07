@@ -6,6 +6,11 @@ import router from "./server/routers/route.js";
 import pool from "./server/db/index.js";
 import session from 'express-session';
 import flash from 'connect-flash';
+import methodOverride from 'method-override';
+
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 
 
 dotenv.config();
@@ -13,7 +18,12 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// parse middleware
+// define url
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// parse
+app.use(methodOverride('_method'));
 
 // parse application/form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -28,7 +38,7 @@ app.use(express.static('public'));
 app.engine('hbs', engine({
     extname: '.hbs',
     defaultLayout: 'main',
-    partialsDir: 'views/partials/',
+    partialsDir: path.join(__dirname, 'views/partials'),
     helpers: {
         eq: function (a, b) {
             return a === b;
