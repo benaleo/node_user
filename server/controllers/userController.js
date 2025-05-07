@@ -140,7 +140,7 @@ const userController = {
     },
 
     update: (req, res) => {
-        const {name, email, phone, is_active} = req.body;
+        const {name, email, phone, is_active, } = req.body;
         const {id} = req.params;
 
         // Validation
