@@ -32,33 +32,74 @@ const userController = {
 
     create: (req, res) => {
 
-        res.render('users/create', {})
+        res.render('users/create', {
+            title: 'Create User',
+            errorMessage: req.flash('error')
+        })
     },
 
     store: (req, res) => {
-        const { name, email, phone, is_active } = req.body;
+        const {name, email, phone, is_active} = req.body;
 
-        pool.getConnection((err, connection) => {  // Changed from getMaxListeners to getConnection
+        // Validation
+        if (!name || name.trim() === '') {
+            return res.render('users/create', {
+                errorMessage: 'Name is required',
+                // Return the input data so the user doesn't have to retype everything
+                formData: {
+                    email,
+                    phone,
+                    is_active
+                }
+            });
+        }
+
+        if (!email || email.trim() === '') {
+            return res.render('users/create', {
+                errorMessage: 'Email is required',
+                formData: {
+                    name,
+                    phone,
+                    is_active
+                }
+            });
+        }
+
+        pool.getConnection((err, connection) => {
             if (err) {
                 console.error("Connection error", err);
-                return res.status(500).send("Database connection error");
+                return res.render('users/create', {
+                    errorMessage: 'Database connection error',
+                    formData: {
+                        name,
+                        email,
+                        phone,
+                        is_active
+                    }
+                });
             }
             console.log("Connected! with ID " + connection.threadId);
 
-            // Fixed query with spaces after SET and proper formatting
-            connection.query('INSERT INTO users SET ' +  // Added space after SET
-                'name = ?, ' +  // Added space after comma
-                'email = ?, ' +  // Added space after comma
-                'phone = ?, ' +  // Added space after comma
+            connection.query('INSERT INTO users SET ' +
+                'name = ?, ' +
+                'email = ?, ' +
+                'phone = ?, ' +
                 'is_active = ?',
-                [name, email, phone, is_active],  // Changed to array for parameterized query
+                [name, email, phone, is_active],
                 (err, results) => {
-                    // release in done
                     connection.release();
 
                     if (err) {
                         console.error("Query error", err);
-                        return res.status(500).send("Database query error");
+                        return res.render('users/create', {
+                            errorMessage: 'Database error: ' + err.message,
+                            formData: {
+                                name,
+                                email,
+                                phone,
+                                is_active
+                            }
+                        });
                     } else {
                         req.flash('success', 'User created successfully');
                         res.redirect('/users');

@@ -28,7 +28,12 @@ app.use(express.static('public'));
 app.engine('hbs', engine({
     extname: '.hbs',
     defaultLayout: 'main',
-    partialsDir: 'views/partials/'
+    partialsDir: 'views/partials/',
+    helpers: {
+        eq: function (a, b) {
+            return a === b;
+        }
+    }
 }));
 app.set('view engine', 'hbs');
 

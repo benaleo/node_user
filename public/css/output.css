@@ -7,6 +7,7 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
+    --color-red-400: oklch(70.4% 0.191 22.216);
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-green-400: oklch(79.2% 0.209 151.711);
     --color-green-500: oklch(72.3% 0.219 149.579);
@@ -277,6 +278,9 @@
   .border-gray-300 {
     border-color: var(--color-gray-300);
   }
+  .border-red-400 {
+    border-color: var(--color-red-400);
+  }
   .bg-blue-500 {
     background-color: var(--color-blue-500);
   }
@@ -393,6 +397,18 @@
   --tw-shadow-color: oklch(79.2% 0.209 151.711);
   @supports (color: color-mix(in lab, red, red)) {
     --tw-shadow-color: color-mix(in oklab, var(--color-green-400) var(--tw-shadow-alpha), transparent);
+  }
+}
+.alert-error {
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  border-color: var(--color-red-400);
+  color: var(--color-red-400);
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --tw-shadow-color: oklch(70.4% 0.191 22.216);
+  @supports (color: color-mix(in lab, red, red)) {
+    --tw-shadow-color: color-mix(in oklab, var(--color-red-400) var(--tw-shadow-alpha), transparent);
   }
 }
 @property --tw-border-style {
