@@ -4,14 +4,16 @@ import bodyParser from "body-parser";
 import dotenv from 'dotenv';
 import router from "./server/routers/route.js";
 import pool from "./server/db/index.js";
+// session
 import session from 'express-session';
+// add flash message alert
 import flash from 'connect-flash';
+// override method form url action
 import methodOverride from 'method-override';
+// import route
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-
 
 dotenv.config();
 
@@ -73,3 +75,4 @@ app.use(router);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
+

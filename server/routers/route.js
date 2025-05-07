@@ -1,5 +1,6 @@
 import express from 'express';
 import userController from "../controllers/userController.js";
+import upload from "../../config/multerConfig.js";
 
 const router = express.Router();
 
@@ -9,9 +10,9 @@ router.get('/', (req, res) => {
 
 router.get('/users', userController.view);
 router.get('/users/create', userController.create);
-router.post('/users/create', userController.store);
+router.post('/users/create', upload.single('avatar'), userController.store);
 router.get('/users/edit/:id', userController.edit);
-router.put('/users/edit/:id', userController.update);
+router.post('/users/edit/:id', upload.single('avatar'), userController.update);
 router.delete('/users/delete/:id', userController.delete);
 
 

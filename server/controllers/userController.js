@@ -1,4 +1,6 @@
 import pool from '../db/index.js';
+import path from 'path';
+import * as fs from "node:fs";
 
 // Import database connection (if needed)
 
@@ -24,8 +26,6 @@ const userController = {
                     users: results,
                     successMessage: req.flash('success')
                 });
-
-                console.log(results);
             });
         });
     },
@@ -40,6 +40,13 @@ const userController = {
 
     store: (req, res) => {
         const {name, email, phone, is_active} = req.body;
+
+        // handle avatar file
+        let avatarPath = null;
+        if (req.file){
+            avatarPath = `/uploads/${req.file.filename}`;
+            console.log(avatarPath);
+        }
 
         // Validation
         if (!name || name.trim() === '') {
@@ -80,12 +87,8 @@ const userController = {
             }
             console.log("Connected! with ID " + connection.threadId);
 
-            connection.query('INSERT INTO users SET ' +
-                'name = ?, ' +
-                'email = ?, ' +
-                'phone = ?, ' +
-                'is_active = ?',
-                [name, email, phone, is_active],
+            const query = 'INSERT INTO users (name, email, phone, is_active, avatar) VALUES (?, ?, ?, ?, ?)'
+            connection.query(query, [name, email, phone, is_active, avatarPath],
                 (err, results) => {
                     connection.release();
 
@@ -121,7 +124,7 @@ const userController = {
             console.log("Connected! with ID " + connection.threadId);
 
             // get data
-            connection.query('SELECT id, name, email, phone, is_active FROM users WHERE id = ?', [req.params.id], (err, results) => {
+            connection.query('SELECT id, name, email, phone, is_active, avatar FROM users WHERE id = ?', [req.params.id], (err, results) => {
                 connection.release();
                 if (err) {
                     console.error("Query error", err);
@@ -165,31 +168,64 @@ const userController = {
             }
             console.log("Connected! with ID " + connection.threadId);
 
-            connection.query(
-                'UPDATE users SET name = ?, email = ?, phone = ?, is_active = ? WHERE id = ?',
-                [name, email, phone, is_active, id],
-                (err, results) => {
+            console.log("file:", req.file);
+
+            let avatarPath = null;
+            console.log("avatarPath:", avatarPath);
+
+            const currentUserQuery = 'SELECT * FROM users WHERE id = ?';
+            connection.query(currentUserQuery, [id], (err, results) => {
+                if (err) {
                     connection.release();
-
-                    if (err) {
-                        console.error("Query error", err);
-                        return res.render('users/edit', {
-                            errorMessage: 'Database error: ' + err.message,
-                            formData: {name, email, phone, is_active}
-                        });
-                    }
-
-                    if (results.affectedRows === 0) {
-                        return res.render('users/edit', {
-                            errorMessage: 'No user found with the specified ID',
-                            formData: {name, email, phone, is_active}
-                        });
-                    }
-
-                    req.flash('success', 'User updated successfully');
-                    res.redirect('/users');
+                    console.error("Query error", err);
+                    return res.render('users/edit', {
+                        errorMessage: 'Database error: ' + err.message,
+                        formData: {name, email, phone, is_active}
+                    });
                 }
-            );
+
+                avatarPath = results[0].avatar;
+                console.log("avatarPath update db:", avatarPath);
+                if (req.file) {
+                    // delete the exist avatar file
+                    if (avatarPath !== null) {
+                        const oldAvatarPath = path.join(__dirname, '../public' + avatarPath);
+                        if (fs.existsSync(oldAvatarPath)) {
+                            fs.unlinkSync(oldAvatarPath);
+                        }
+                    }
+                    avatarPath = `/uploads/${req.file.filename}`;
+                    console.log("new avatarPath:", avatarPath);
+                } else {
+                    avatarPath = results[0].avatar; // keep the current avatar if no file is uploaded
+                }
+
+                console.log("avatarPath want to save:", avatarPath);
+                const query = 'UPDATE users SET name = ?, email = ?, phone = ?, is_active = ?, avatar = ? WHERE id = ?';
+                connection.query(query, [name, email, phone, is_active, avatarPath, id],
+                    (err, results) => {
+                        connection.release();
+
+                        if (err) {
+                            console.error("Query error", err);
+                            return res.render('users/edit', {
+                                errorMessage: 'Database error: ' + err.message,
+                                formData: {name, email, phone, is_active}
+                            });
+                        }
+
+                        if (results.affectedRows === 0) {
+                            return res.render('users/edit', {
+                                errorMessage: 'No user found with the specified ID',
+                                formData: {name, email, phone, is_active}
+                            });
+                        }
+
+                        req.flash('success', 'User updated successfully');
+                        res.redirect('/users');
+                    }
+                );
+            });
         });
     },
 
