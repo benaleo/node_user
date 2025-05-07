@@ -4,6 +4,9 @@ import bodyParser from "body-parser";
 import dotenv from 'dotenv';
 import router from "./server/routers/route.js";
 import pool from "./server/db/index.js";
+import session from 'express-session';
+import flash from 'connect-flash';
+
 
 dotenv.config();
 
@@ -37,6 +40,16 @@ pool.getConnection((err, connection) => {
     }
     console.log('Connected to database');
 });
+
+// setup session
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false
+}));
+
+// setup flash
+app.use(flash());
 
 // router
 app.use(router);

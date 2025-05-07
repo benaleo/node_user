@@ -3,9 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./css/output.css" rel="stylesheet">
+    <link href="../css/output.css" rel="stylesheet">
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const alertBox = document.getElementById("alert");
+            if (alertBox && alertBox.textContent.trim()) {
+                setTimeout(() => {
+                    alertBox.style.display = "none";
+                }, 3000);
+            }
+        });
+    </script>
 </head>
 <body>
+
+{{#if successMessage}}
+<div id="alert"
+     class="alert alert-success">
+    {{successMessage}}
+</div>
+{{/if}}
+
 <main class="mt-12 container mx-auto">
     {{{body}}}
 </main>

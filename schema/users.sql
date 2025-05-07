@@ -1,4 +1,4 @@
-CREATE DATABASE node-user;
+CREATE DATABASE node_user;
 
 CREATE TABLE users
 (
@@ -18,3 +18,5 @@ VALUES (1, 'Alice', 'alice@example.com', NULL, '1234567890', TRUE, FALSE),
        (2, 'Bob', 'bob@example.com', NULL, '0987654321', TRUE, FALSE),
        (3, 'Charlie', 'charlie@example.com', NULL, '1122334455', FALSE, FALSE),
        (4, 'Diana', 'diana@example.com', NULL, '5566778899', TRUE, TRUE);
+
+DROP TABLE IF EXISTS users;
