@@ -26,7 +26,7 @@
         <td class="border border-gray-300 px-4 py-2">{{this.phone}}</td>
         <td class="border border-gray-300 px-4 py-2">
             <button onclick="handleEdit({{this.id}})" class="bg-blue-500 text-white px-2 py-1 rounded mr-2">Edit</button>
-            <button class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+            <button onclick="handleDelete({{this.id}})" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
         </td>
     </tr>
     {{/each}}
@@ -37,5 +37,18 @@
 <script>
     function handleEdit(id) {
         window.location.href = `/users/edit/${id}`;
+    }
+
+    function handleDelete(id) {
+        if (confirm("Are you sure you want to delete this user?")) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/users/delete/${id}?_method=DELETE`
+            form.style.display = 'none'
+
+            // append the form to the doc body;
+            document.body.appendChild(form);
+            form.submit();
+        }
     }
 </script>

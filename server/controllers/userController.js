@@ -191,6 +191,28 @@ const userController = {
                 }
             );
         });
+    },
+
+    delete(req, res) {
+        const id = req.params.id;
+
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.error("Connection error", err);
+                return res.status(500).send("Database connection error");
+            }
+            console.log("Connected! with ID " + connection.threadId);
+
+            connection.query('UPDATE users SET is_deleted = true WHERE id = ?', [id], (err, results) => {
+                connection.release();
+                if (err) {
+                    console.error("Query error", err);
+                    return res.status(500).send("Database query error");
+                }
+                req.flash('success', 'User deleted successfully');
+                res.redirect('/users');
+            })
+        })
     }
 };
 
